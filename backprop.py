@@ -2,10 +2,10 @@ import numpy as np
 import conv
 
 
-def square_error(output, target):
+def derivative_square_error(output, target):
 	error = output - target
 	squared_error = error * error
-	return squared_error
+	return 2*error
 
 
 # Loss at the output layer
@@ -13,14 +13,14 @@ def compute_loss(output, target):
 	out_row, out_col, out_channels = target.shape
 	loss = np.zeros((out_row, out_col, out_channels))
 	for colour in range(out_channels):
-		loss[:, :, colour] = square_error(output[:, :, colour], target[:, :, colour])
+		loss[:, :, colour] = derivative_square_error(output[:, :, colour], target[:, :, colour])
 	return loss
 
 
 # Back propagation
 # Loss at layer l --> Backprop to layer l-1
 # Update weights between layer l-1 and l
-def backprop(delta_out, input, weights):
+def backprop(delta_out, input, input_wo_act, weights):
 	alpha = 0.01
 	input_sum = np.sum(input, axis = 2)
 	input_sum_zero_padded = np.pad(input_sum, (1), 'constant', constant_values=(0))
@@ -38,13 +38,31 @@ def backprop(delta_out, input, weights):
 			print "x_cord", in_row - weight_dim[0] + 1
 			print "y_cord_begin", col
 			print "y_cord", in_col - weight_dim[1] + 1
-			delta_w = sum(sum(np.multiply(delta_out[:,:,0], input_sum_zero_padded[row: row+in_row - weight_dim[0] + 1, col: col+in_col - weight_dim[1] + 1])))
+			delta_w = sum(sum(np.multiply(delta_out[:, :, 0],
+										  input_sum_zero_padded[row: row+in_row - weight_dim[0] + 1,
+										  col: col+in_col - weight_dim[1] + 1])))
 			delta_matrix[row][col][0] = delta_w
+
 	# compute delta inputs
+	input_dim = input.shape
+	delta_x_matrix = np.zeros(input_dim)
+	flipped_weights = np.flipud(np.fliplr(weights))
+	delta_out_padded = np.pad(delta_out, (1), 'constant', constant_values=(0))
+	delta_shape = delta_out_padded.shape
+
+	delta_out = delta_out * conv.sigmoid_derivative(input_wo_act)
+	delta_x_matrix = conv.conv_block(delta_out, flipped_weights)
+
+	# for row in range(1, delta_shape[0]-1):
+	# 	for col in range(1, delta_shape[1]-1):
+	# 		# delta_x = sum(sum(sum(np.multiply(delta_out_padded[row - 1: row + 2, col - 1: col + 2], flipped_weights))))
+	# 		print delta_x
+	# 		delta_x_matrix[row-1][col-1][0] = delta_x
 
 	# update the weights
-	# weights -= alpha * delta_w
-	return delta_matrix
+	weights -= alpha * delta_w
+
+	return delta_x_matrix
 
 
 conv_input = np.zeros((2, 2, 1))
