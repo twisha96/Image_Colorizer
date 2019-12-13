@@ -2,19 +2,28 @@ import numpy as np
 
 
 def sigmoid_activation(x):
-	return 1/(1+np.power(np.e, (-x)))
+	return 1/(1+np.exp(-x))
 
 
 def sigmoid_derivative(x):
-	return sigmoid_activation(x)(1 - sigmoid_activation(x))
+	return sigmoid_activation(x)*(1 - sigmoid_activation(x))
 
+
+def relu_activation(x):
+	return x.clip(min=0)
+
+
+def relu_derivative(x):
+	x[x < 0] = 0
+	x[x > 0] = 1
+	return x
 
 # assuming stride to be one and no changes in the 2D dimension
 def conv_block(conv_input, current_filters):
-	print conv_input.shape
+	# print conv_input.shape
 	in_row, in_col, prev_f_no = conv_input.shape
 
-	print current_filters
+	# print current_filters
 	f_size_current, f_size_current, current_f_no = current_filters.shape
 
 	output_wo_activation = np.zeros((in_row, in_col, current_f_no))
@@ -35,8 +44,12 @@ def conv_block(conv_input, current_filters):
 					patch = input_channel_zero_padded[row : row + f_size_current, col: col + f_size_current, input_channel]
 					conv_sum = conv_sum + sum(sum(np.multiply(current_filter, patch)))
 
-				output_wo_activation[row][col][conv_filter] = conv_sum
-				current_output[row][col][conv_filter] = sigmoid_activation(conv_sum)
+				output_wo_activation[row][col][conv_filter] = conv_sum #/ (prev_f_no*10)
+				# current_output[row][col][conv_filter] = sigmoid_activation(output_wo_activation[row][col][conv_filter])
+				current_output[row][col][conv_filter] = relu_activation(conv_sum)
+
+	print "conv wo activation: ", output_wo_activation
+	print "conv after activation: ", current_output
 
 	return current_output, output_wo_activation
 
