@@ -18,6 +18,7 @@ def relu_derivative(x):
 	x[x > 0] = 1
 	return x
 
+
 # assuming stride to be one and no changes in the 2D dimension
 def conv_block(conv_input, current_filters):
 	# print conv_input.shape
@@ -41,7 +42,7 @@ def conv_block(conv_input, current_filters):
 				conv_sum = 0
 				for input_channel in range(prev_f_no):
 					current_filter = current_filters[:, :, conv_filter]
-					patch = input_channel_zero_padded[row : row + f_size_current, col: col + f_size_current, input_channel]
+					patch = input_channel_zero_padded[row: row + f_size_current, col: col + f_size_current, input_channel]
 					conv_sum = conv_sum + sum(sum(np.multiply(current_filter, patch)))
 
 				output_wo_activation[row][col][conv_filter] = conv_sum #/ (prev_f_no*10)

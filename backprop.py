@@ -59,11 +59,11 @@ def backprop(delta_out, input, input_wo_act, weights, is_output_layer):
 		# print "weights ", weights[:, :, i]
 		# print "flipped weights ", flipped_weights[:, :, i]
 
-	# if is_output_layer:
-	# 	delta_out = delta_out * conv.sigmoid_derivative(input_wo_act)
-	# else:
+	if is_output_layer:
+		delta_out = delta_out * conv.sigmoid_derivative(input_wo_act)
+	else:
 		# delta_out = delta_out * conv.sigmoid_derivative(input_wo_act)
-	delta_out = delta_out * conv.relu_derivative(input_wo_act)
+		delta_out = delta_out * conv.relu_derivative(input_wo_act)
 
 	_, delta_x_matrix = conv.conv_block(delta_out, flipped_weights)
 

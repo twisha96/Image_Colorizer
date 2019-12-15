@@ -1,44 +1,15 @@
 # load and display an image with Matplotlib
 from matplotlib import image
 from matplotlib import pyplot
-import numpy as np
 import conv as conv
 from conv import conv_block
 import backprop as bp
-import pdb
-from PIL import Image
-
-from PIL import Image
 import numpy as np
-
-
-def colorize_grayscale_image(r_matrix, g_matrix, b_matrix):
-    pixels = []
-    for row in range(len(r_matrix)):
-        new = []
-        for col in range(len(r_matrix[0])):
-            pixel_rgb_value = (r_matrix[row][col], g_matrix[row][col], b_matrix[row][col])
-            new.append(pixel_rgb_value)
-            pixels.append(new)
-
-    # Convert the pixels into an array using numpy
-    array = np.array(pixels, dtype=np.uint8)
-
-    # Use PIL to create an image from the new array of pixels
-    new_image = Image.fromarray(array)
-    new_image.show()
-    new_image.save('new.png')
-
-
-# r_matrix = [[54,232],[204,54]]
-# g_matrix = [[54,23],[82,54]]
-# b_matrix = [[54,93],[122,54]]
-# colorize_grayscale_image(r_matrix, g_matrix, b_matrix)
 
 
 def normalize_output_layer(output):
     num_layers = output.shape[2]
-    normalized_output = np.zeros((output.shape))
+    normalized_output = np.zeros(output.shape)
     for l in range(num_layers):
         max_value = np.amax(output[:, :, l])
         min_value = np.amin(output[:, :, l])
@@ -121,29 +92,5 @@ for i in range(iterations):
     pyplot.imshow(layer_output[layers])
     pyplot.show()
 
-    # temp = layer_output[layers] * 255
-    # print "temp  ", temp
-    # newtemp = np.array(temp, dtype=np.uint8)
-    # outt = Image.fromarray(newtemp)
-    # outt.show()
-    # filename = str("sigmoid_try3_iter_") + str(i) + str(".png")
-    # outt.save(filename)
-
-
 pyplot.imshow(layer_output[layers - 1])
 pyplot.show()
-# print layer_output[layers - 1]
-# normalized_output_layer = normalize_output_layer(layer_output[layers])
-# print "normalised output: ", normalized_output_layer
-
-# image = Image.open('image.jpg')
-#
-# temp = np.array(image)
-# temp = temp/255.0
-
-# temp = layer_output[layers]*255
-# print "temp  ", temp
-# newtemp = np.array(temp, dtype=np.uint8)
-# outt = Image.fromarray(newtemp)
-# outt.show()
-# outt.save("try.png")
