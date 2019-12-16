@@ -35,7 +35,7 @@ def getData(dirname, channel):
 		if filename != ".DS_Store":
 			count = count + 1
 	count = 1
-	x = np.zeros((count, 200, 200, channel))
+	x = np.zeros((count, height, width, channel))
 	itr = 0
 	for filename in os.listdir(dirname):
 		if filename != ".DS_Store":
@@ -50,8 +50,8 @@ def getData(dirname, channel):
 			break
 	return x		
 
-width = 200
-height = 200
+width = 367
+height = 500
 
 # img = Image.open('flowerpot.jpg')
 # data = np.asarray(img, dtype=np.uint8)
@@ -68,27 +68,26 @@ height = 200
 # X_train = np.zeros((1,height,width,1))
 # X_train[0,:,:,:] = train
 
-X_train = getData('/Users/adityalakra/Desktop/Image_Colorizer/x_train', 1)
-y_train = getData('/Users/adityalakra/Desktop/Image_Colorizer/y_train', 3)
+X_train = getData('/Users/adityalakra/Desktop/Image_Colorizer/im_f', 1)
+y_train = getData('/Users/adityalakra/Desktop/Image_Colorizer/im', 3)
 
 no_of_samples,_, _, _, = X_train.shape
 print X_train.shape
 
 model = Sequential()
-model.add(Conv2D(128, kernel_size=3, padding='same', activation='relu', input_shape=(height,width,1)))
+model.add(Conv2D(3, kernel_size=3, padding='same', activation='relu', input_shape=(height,width,1)))
 # model.add(MaxPooling2D())
-model.add(Conv2D(512, kernel_size=5, padding='same', activation='relu'))
-model.add(Conv2D(128, kernel_size=3, padding='same', activation='relu'))
+model.add(Conv2D(5, kernel_size=5, padding='same', activation='relu'))
 # model.add(UpSampling2D())
 # model.add(Conv2D(3, kernel_size=3, padding='same', activation='relu'))
 # model.add(Conv2DTranspose(3, kernel_size=5, padding='same', activation='relu', input_shape=(height/2,width/2,1), out_shape=(height,width,1)))
-model.add(Conv2D(3, kernel_size=3, padding='same', activation='sigmoid'))
+model.add(Conv2D(3, kernel_size=3, padding='same', activation='relu'))
 
 model.compile(optimizer='adam', loss=losses.mean_squared_error, metrics=['mse'])
-model.fit(X_train, y_train, epochs=50, steps_per_epoch = no_of_samples)
+model.fit(X_train, y_train, epochs=500, steps_per_epoch = no_of_samples)
 
 save_model(model)
 
-X_test = getData('/Users/adityalakra/Desktop/Image_Colorizer/x_train', 1)
+X_test = getData('/Users/adityalakra/Desktop/Image_Colorizer/im_f', 1)
 no_of_samples,_,_,_ = X_test.shape
 showpredict(X_test, 1)

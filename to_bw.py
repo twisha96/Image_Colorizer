@@ -3,10 +3,10 @@ import os
 import numpy as np
 
 
-for filename in os.listdir('/Users/adityalakra/Desktop/Image_Colorizer/input'):
+for filename in os.listdir('/Users/adityalakra/Desktop/Image_Colorizer/im/'):
 	if filename != ".DS_Store":
 		print filename
-		img = Image.open('/Users/adityalakra/Desktop/Image_Colorizer/input/' + filename)
+		img = Image.open('/Users/adityalakra/Desktop/Image_Colorizer/im/' + filename)
 
 		data = np.asarray(img, dtype=np.uint8)
 		r = data[:, :, 0]
@@ -16,7 +16,7 @@ for filename in os.listdir('/Users/adityalakra/Desktop/Image_Colorizer/input'):
 		newtemp = np.array(newdata, dtype=np.uint8)
 		img_f = Image.fromarray(newtemp)
 
-		img_f.save('/Users/adityalakra/Desktop/Image_Colorizer/input_bw/' + filename)
+		img_f.save('/Users/adityalakra/Desktop/Image_Colorizer/im_f/' + filename)
 
 
 

@@ -47,7 +47,7 @@ def normalize_output_layer(output):
 
 
 # load image as pixel array
-data = image.imread('image.jpg')
+data = image.imread('puppy_100.jpg')
 # print(data)
 
 # summarize shape of the pixel array
@@ -74,7 +74,7 @@ print("Shape of B/W image: ", grayscale.shape)
 
 
 # Main function
-iterations = 10
+iterations = 3
 layers = 3
 
 # print grayscale.shape[0], grayscale.shape[1]
@@ -97,7 +97,8 @@ for i in range(iterations):
         layer_output.append(curr_input)
         layer_output_wo_activation.append(without_activation)
 
-    layer_output[-1] = conv.sigmoid_activation(layer_output_wo_activation[-1])
+    #layer_output[-1] = conv.sigmoid_activation(layer_output_wo_activation[-1])
+    layer_output[-1] = conv.relu_activation(layer_output_wo_activation[-1])
 
     target = np.zeros((grayscale.shape[0], grayscale.shape[1], 3))
     target[:, :, 0] = r
@@ -130,8 +131,20 @@ for i in range(iterations):
     # outt.save(filename)
 
 
+layer_output = []
+layer_output_wo_activation = []
+curr_input[:, :, 0] = grayscale
+for i in range(1):
+    for l in range(layers):
+        print "Forward pass layer number: ", l
+        # if l == layers-1:
+        #     curr_input = normalize_output_layer(curr_input)
+        curr_input, without_activation = conv_block(curr_input, W[l])
+        layer_output.append(curr_input)
+        layer_output_wo_activation.append(without_activation)
+
 pyplot.imshow(layer_output[layers - 1])
-pyplot.show()
+pyplot.show()        
 # print layer_output[layers - 1]
 # normalized_output_layer = normalize_output_layer(layer_output[layers])
 # print "normalised output: ", normalized_output_layer
